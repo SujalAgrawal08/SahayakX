@@ -7,7 +7,7 @@ import Footer from "@/components/Footer";
 import TransitionProvider from "@/components/TransitionProvider"; // IMPORT THIS
 import ChatBot from "@/components/ChatBot";
 import SyncManager from "@/components/SyncManager";
-
+import { Toaster } from "sonner";
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -55,6 +55,22 @@ export default function RootLayout({
             <SyncManager />
           </TransitionProvider>
         </Provider>
+
+        <Toaster
+          position="top-center"
+          richColors
+          toastOptions={{
+            style: {
+              background: "rgba(255, 255, 255, 0.8)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255, 255, 255, 0.5)",
+              borderRadius: "1.5rem",
+              fontSize: "14px",
+              fontWeight: 500,
+              boxShadow: "0 10px 40px -10px rgba(0,0,0,0.1)",
+            },
+          }}
+        />
       </body>
     </html>
   );

@@ -124,7 +124,8 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 relative z-10">
         {/* BLOCK A: Smart Search */}
         <div className="md:col-span-12">
-          <SmartSearch />
+          {/* THE FIX: Pass the setSelectedScheme function to the component */}
+          <SmartSearch onSelect={(scheme) => setSelectedScheme(scheme)} />
         </div>
 
         {/* === UPDATED: QUICK ACTION ROW (5 Columns) === */}
@@ -381,7 +382,7 @@ export default function Home() {
                       95% Match
                     </span>
                     <h3 className="text-xl font-bold text-slate-900 mt-4 mb-2 leading-tight pr-4">
-                      {scheme.scheme_name}
+                      {scheme.name}
                     </h3>
                     <div className="flex items-center gap-2 text-rose-500 font-bold text-sm group-hover:gap-3 transition-all mt-4">
                       View Details <ArrowRight size={16} />

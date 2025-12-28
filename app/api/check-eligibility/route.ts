@@ -1,34 +1,65 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
+import mongoose from 'mongoose';
 import Scheme from '@/models/Scheme';
-import { checkEligibility, UserProfile } from '@/lib/rulesEngine';
 
 export async function POST(req: Request) {
   try {
-    const userProfile: UserProfile = await req.json();
+    // 1. Connect
+    await mongoose.connect(process.env.MONGODB_URI!);
 
-    await dbConnect();
+    // 2. Normalize User Data
+    const body = await req.json();
+    
+    // Ensure numbers are numbers, strings are strings
+    const age = Number(body.age) || 18;
+    const income = Number(body.income) || 0;
+    const gender = body.gender || "Male";
+    const caste = body.caste || "General";
+    const occupation = body.occupation || "Unemployed";
+    const state = body.state || "India";
 
-    // 1. Fetch ALL schemes from DB
-    // Optimization: We only fetch the 'rules' field to make it fast
-    const allSchemes = await Scheme.find({});
+    console.log("🔍 Checking Eligibility:", { age, income, gender, occupation, state });
 
-    // 2. Run the Rule Engine
-    const results = allSchemes.map((scheme) => 
-      checkEligibility(userProfile, scheme)
-    );
+    // 3. THE FIX: Query matching 'seed.ts' structure
+    const query = {
+      // Numerical Logic: User age must be within Scheme range
+      age_min: { $lte: age },
+      age_max: { $gte: age },
 
-    // 3. Separate Winners and Losers
-    const eligibleSchemes = results.filter(r => r.eligible);
-    const ineligibleSchemes = results.filter(r => !r.eligible);
+      // Income Logic: User income must be LESS than Scheme limit
+      income_max: { $gte: income },
+
+      // Enum Logic: Scheme gender must be 'All' OR match user
+      gender: { $in: ["All", gender] },
+
+      // Geography: Scheme must be 'India' OR match user's state
+      state: { $in: ["India", state] },
+
+      // Array Logic: 
+      // In Mongoose, if 'caste' is an array ["General", "OBC"], 
+      // querying { caste: "General" } automatically checks if it exists in the array.
+      caste: caste,
+      occupation: occupation 
+    };
+
+    // 4. Execute
+    const eligibleSchemes = await Scheme.find(query).limit(10);
+
+    // 5. Find "Ineligible" (Close matches) for preview
+    // Finds schemes for the user's state that didn't meet strict criteria
+    const ineligibleSchemes = await Scheme.find({
+      state: { $in: ["India", state] },
+      _id: { $nin: eligibleSchemes.map(s => s._id) }
+    }).limit(3).select('name');
 
     return NextResponse.json({
-      summary: `Found ${eligibleSchemes.length} schemes for you.`,
+      summary: `Found ${eligibleSchemes.length} schemes matching your profile.`,
       eligible: eligibleSchemes,
-      ineligible_preview: ineligibleSchemes.map(s => ({ name: s.scheme_name, reason: s.reasons[0] })) // Just showing one reason
+      ineligible_preview: ineligibleSchemes.map(s => ({ name: s.name, reason: "Criteria mismatch" }))
     });
 
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error) {
+    console.error("Eligibility API Error:", error);
+    return NextResponse.json({ error: "Processing failed" }, { status: 500 });
   }
 }

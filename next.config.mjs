@@ -1,20 +1,25 @@
 /** @type {import('next').NextConfig} */
 import withPWAInit from "next-pwa";
 
-// 1. Configure PWA (Service Worker)
 const withPWA = withPWAInit({
-  dest: "public",         // Where to put the service worker file
-  register: true,         // Register automatically
-  skipWaiting: true,      // Update cache immediately
-  disable: process.env.NODE_ENV === "development", // Disable in dev to prevent caching confusion
+  dest: "public",
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === "development",
 });
 
-// 2. Your Existing Next.js Configuration
 const nextConfig = {
   reactStrictMode: true,
   
   experimental: {
-    serverComponentsExternalPackages: ['mongoose', '@xenova/transformers', 'onnxruntime-node'],
+    // UPDATED: Removed 'pdf-parse', added 'pdf2json'
+    serverComponentsExternalPackages: [
+      'mongoose', 
+      '@xenova/transformers', 
+      'onnxruntime-node', 
+      'pdf2json',
+      'tesseract.js', 
+    ],
   },
 
   webpack: (config) => {
@@ -37,5 +42,4 @@ const nextConfig = {
   },
 };
 
-// 3. Wrap and Export
 export default withPWA(nextConfig);

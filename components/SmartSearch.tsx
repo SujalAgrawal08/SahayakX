@@ -1,55 +1,116 @@
 "use client";
-import { useState } from "react";
-import { Search, Loader2, Sparkles, Command } from "lucide-react";
 
-export default function SmartSearch() {
+import { useState, useEffect, useRef } from "react";
+import { Search, Sparkles, ArrowRight, Loader2 } from "lucide-react";
+
+// Add props interface to accept the handler
+interface SmartSearchProps {
+  onSelect?: (scheme: any) => void;
+}
+
+export default function SmartSearch({ onSelect }: SmartSearchProps) {
   const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  const handleSearch = async () => {
-    if(!query) return;
-    setLoading(true);
-    setResults([]);
-    try {
-      const res = await fetch("/api/search", { method: "POST", body: JSON.stringify({query}), headers: {"Content-Type":"application/json"}});
-      setResults(await res.json());
-    } catch(e) {} finally { setLoading(false); }
-  };
+  // Debounce Search Logic
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (query.length > 2) {
+        setLoading(true);
+        try {
+          const res = await fetch('/api/search', {
+            method: 'POST',
+            body: JSON.stringify({ query })
+          });
+          const data = await res.json();
+          setResults(data);
+          setShowResults(true);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setResults([]);
+        setShowResults(false);
+      }
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(timer);
+  }, [query]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: any) {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
-    <div className="relative z-40 w-full max-w-4xl mx-auto mb-8">
+    <div className="relative w-full max-w-2xl mx-auto z-50" ref={searchRef}>
+      
+      {/* Search Bar */}
       <div className="relative group">
-        {/* Glow Effect */}
-        <div className="absolute -inset-1 bg-gradient-to-r from-rose-400 via-fuchsia-500 to-indigo-500 rounded-full blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
-        
-        <div className="relative bg-white rounded-full shadow-2xl flex items-center p-2 pl-6">
-           <Sparkles className="text-rose-500 animate-pulse mr-4" size={24} />
-           <input 
-             className="w-full py-4 text-xl font-bold text-slate-800 placeholder:text-slate-300 bg-transparent outline-none tracking-tight"
-             placeholder="Search schemes with AI..." 
-             value={query}
-             onChange={(e) => setQuery(e.target.value)}
-             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-           />
-           <button onClick={handleSearch} className="bg-black text-white p-4 rounded-full hover:scale-105 transition-transform flex items-center justify-center">
-             {loading ? <Loader2 className="animate-spin" size={24} /> : <Search size={24} />}
-           </button>
+        <div className="absolute inset-0 bg-gradient-to-r from-rose-200 via-purple-200 to-indigo-200 rounded-full blur-md opacity-30 group-hover:opacity-60 transition-opacity"></div>
+        <div className="relative flex items-center bg-white rounded-full shadow-xl shadow-indigo-100/50 border border-white p-2 transition-transform group-hover:scale-[1.01]">
+          <div className="pl-4 text-rose-500 animate-pulse">
+            <Sparkles size={20} />
+          </div>
+          <input 
+            className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-slate-700 font-bold placeholder:text-slate-400 placeholder:font-medium"
+            placeholder="I need money to study..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => { if(results.length > 0) setShowResults(true); }}
+          />
+          <button className="bg-slate-900 text-white p-3 rounded-full hover:bg-slate-800 transition-colors">
+            {loading ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
+          </button>
         </div>
       </div>
 
-      {/* Modern Dropdown */}
-      {results.length > 0 && (
-        <div className="absolute top-[110%] left-4 right-4 bg-white/80 backdrop-blur-xl rounded-[2rem] shadow-2xl border border-white/50 overflow-hidden p-2 animate-in slide-in-from-top-4">
-           {results.map((scheme: any) => (
-             <div key={scheme._id} className="p-4 rounded-xl hover:bg-slate-100/80 cursor-pointer flex justify-between items-center group transition-colors">
-               <div>
-                 <h4 className="font-bold text-slate-900 text-lg">{scheme.name}</h4>
-                 <p className="text-sm text-slate-500 line-clamp-1">{scheme.description}</p>
-               </div>
-               <div className="bg-rose-100 text-rose-700 px-3 py-1 rounded-full text-xs font-bold">{(scheme.score*100).toFixed(0)}%</div>
-             </div>
-           ))}
+      {/* Results Dropdown */}
+      {showResults && results.length > 0 && (
+        <div className="absolute top-full left-0 right-0 mt-4 bg-white rounded-[2rem] shadow-2xl border border-slate-100 p-2 animate-in slide-in-from-top-2">
+          {results.map((scheme, i) => (
+            <div 
+              key={i}
+              onClick={() => {
+                if (onSelect) {
+                  onSelect(scheme);
+                  setShowResults(false); // Close dropdown
+                }
+              }}
+              className="group flex items-start justify-between p-4 hover:bg-slate-50 rounded-3xl cursor-pointer transition-colors"
+            >
+              <div>
+                <h4 className="font-bold text-slate-900 text-sm mb-1 group-hover:text-indigo-600 transition-colors">
+                  {scheme.name}
+                </h4>
+                <p className="text-xs text-slate-500 line-clamp-1">
+                  {scheme.description}
+                </p>
+              </div>
+
+              {/* FIX: Removed NaN% and replaced with a clean Action Button */}
+              <div className="bg-slate-100 text-slate-600 p-2 rounded-full group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                <ArrowRight size={14} />
+              </div>
+            </div>
+          ))}
+          
+          <div className="px-4 py-3 text-center border-t border-slate-50 mt-2">
+            <span className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">
+              AI Powered Search
+            </span>
+          </div>
         </div>
       )}
     </div>
