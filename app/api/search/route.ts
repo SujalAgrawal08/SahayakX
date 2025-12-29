@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     });
 
     const aiKeywords = chatCompletion.choices[0]?.message?.content || query;
-    const searchTerms = aiKeywords.split(" ").filter(w => w.length > 2); // cleanup
+    const searchTerms = (aiKeywords || "").split(" ").filter((w: string) => w.length > 2);
 
     console.log(`User: "${query}" -> AI Keywords:`, searchTerms);
 
