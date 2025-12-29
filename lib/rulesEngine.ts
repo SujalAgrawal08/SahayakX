@@ -74,7 +74,7 @@ export function checkEligibility(user: UserProfile, scheme: IScheme): Eligibilit
   }
 
   return {
-    scheme_id: scheme._id as string,
+    scheme_id: scheme._id.toString(),
     scheme_name: scheme.name,
     // PASS DATA FROM DB TO FRONTEND:
     description: scheme.description, 
