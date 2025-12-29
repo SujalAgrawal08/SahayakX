@@ -2,13 +2,15 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Search, Sparkles, ArrowRight, Loader2 } from "lucide-react";
+import { TRANSLATIONS } from "@/lib/translations"; // <--- UPDATED PATH
 
-// Add props interface to accept the handler
 interface SmartSearchProps {
   onSelect?: (scheme: any) => void;
+  lang: "en" | "hi";
 }
 
-export default function SmartSearch({ onSelect }: SmartSearchProps) {
+// FIX: Added 'lang' to the destructuring below
+export default function SmartSearch({ onSelect, lang }: SmartSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -37,7 +39,7 @@ export default function SmartSearch({ onSelect }: SmartSearchProps) {
         setResults([]);
         setShowResults(false);
       }
-    }, 500); // 500ms delay
+    }, 500); 
 
     return () => clearTimeout(timer);
   }, [query]);
@@ -53,6 +55,9 @@ export default function SmartSearch({ onSelect }: SmartSearchProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Safe access to dictionary
+  const t = TRANSLATIONS[lang] || TRANSLATIONS['en'];
+
   return (
     <div className="relative w-full max-w-2xl mx-auto z-50" ref={searchRef}>
       
@@ -65,7 +70,7 @@ export default function SmartSearch({ onSelect }: SmartSearchProps) {
           </div>
           <input 
             className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-slate-700 font-bold placeholder:text-slate-400 placeholder:font-medium"
-            placeholder="I need money to study..."
+            placeholder={t.searchPlaceholder}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => { if(results.length > 0) setShowResults(true); }}
@@ -85,7 +90,7 @@ export default function SmartSearch({ onSelect }: SmartSearchProps) {
               onClick={() => {
                 if (onSelect) {
                   onSelect(scheme);
-                  setShowResults(false); // Close dropdown
+                  setShowResults(false); 
                 }
               }}
               className="group flex items-start justify-between p-4 hover:bg-slate-50 rounded-3xl cursor-pointer transition-colors"
@@ -99,7 +104,6 @@ export default function SmartSearch({ onSelect }: SmartSearchProps) {
                 </p>
               </div>
 
-              {/* FIX: Removed NaN% and replaced with a clean Action Button */}
               <div className="bg-slate-100 text-slate-600 p-2 rounded-full group-hover:bg-indigo-500 group-hover:text-white transition-all">
                 <ArrowRight size={14} />
               </div>

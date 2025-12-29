@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-// import Link from "next/link"; // REMOVE THIS IMPORT
-import { useTransition } from "@/components/TransitionProvider"; // IMPORT THIS
+// import Link from "next/link"; 
+import { useTransition } from "@/components/TransitionProvider"; 
 import {
   Loader2,
   Download,
@@ -18,7 +18,7 @@ import {
   Share2,
   Database,
 } from "lucide-react";
-// ... (Keep other imports: VoiceAssistant, SmartSearch, etc.) ...
+
 import VoiceAssistant from "@/components/VoiceAssistant";
 import SmartSearch from "@/components/SmartSearch";
 import { generatePDF } from "@/lib/pdfGenerator";
@@ -27,17 +27,19 @@ import { useSession } from "next-auth/react";
 import LandingPage from "@/components/LandingPage";
 import DocUploader from "@/components/DocUploader";
 import SchemeModal from "@/components/SchemeModal";
-import { translations } from "@/lib/translations";
+import { translations } from "@/lib/translations"; // Ensure this matches Step 1
 
 export default function Home() {
   const { data: session, status } = useSession();
-  const { navigate } = useTransition(); // USE THE HOOK
-  // ... (Keep existing state) ...
+  const { navigate } = useTransition();
+  
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<any>(null);
   const [selectedScheme, setSelectedScheme] = useState<any>(null);
+  
+  // Language State
   const [uiLang, setUiLang] = useState<"en" | "hi">("en");
-  const t = translations[uiLang];
+  const t = translations[uiLang]; // Determines which text to show
 
   const [formData, setFormData] = useState({
     age: "",
@@ -82,20 +84,22 @@ export default function Home() {
 
   return (
     <main className="min-h-screen pt-36 pb-20 px-4 md:px-8 max-w-[1600px] mx-auto font-sans">
-      {/* 1. HERO SECTION (Keep as is) */}
+      
+      {/* 1. HERO SECTION (Dynamic) */}
       <div className="text-center mb-12 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <h1 className="text-5xl md:text-7xl font-black tracking-tight text-slate-900 leading-tight">
-          Unlock your <br />
+          {t.hero.title1} <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-fuchsia-500 to-indigo-500 animate-gradient">
-            Full Potential.
+            {t.hero.title2}
           </span>
         </h1>
         <p className="text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
-          AI-powered discovery for 1.4 Billion Indians.{" "}
+          {t.hero.subtitle}
           <br className="hidden md:block" />
-          Upload. Speak. Search. We handle the rest.
+          {t.hero.subtitle2}
         </p>
-        {/* Language Toggles (Keep as is) */}
+
+        {/* Language Toggles */}
         <div className="flex justify-center gap-2 pt-2">
           <button
             onClick={() => setUiLang("en")}
@@ -122,17 +126,18 @@ export default function Home() {
 
       {/* 2. THE BENTO GRID */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 relative z-10">
-        {/* BLOCK A: Smart Search */}
+        
+        {/* BLOCK A: Smart Search (Dynamic) */}
         <div className="md:col-span-12">
-          {/* THE FIX: Pass the setSelectedScheme function to the component */}
-          <SmartSearch onSelect={(scheme) => setSelectedScheme(scheme)} />
+          {/* We pass 'lang' prop so the placeholder changes */}
+          <SmartSearch 
+             onSelect={(scheme) => setSelectedScheme(scheme)} 
+             lang={uiLang} 
+          />
         </div>
 
-        {/* === UPDATED: QUICK ACTION ROW (5 Columns) === */}
-        {/* We now have 5 items. Let's make them scrollable on mobile or grid on desktop */}
-
+        {/* QUICK ACTION ROW (Dynamic) */}
         <div className="md:col-span-12 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-          {/* 1. Kendra Widget */}
           <div
             onClick={() => navigate("/kendra")}
             className="group bg-white rounded-[2rem] p-1.5 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500 cursor-pointer relative overflow-hidden h-32 flex items-center"
@@ -142,12 +147,11 @@ export default function Home() {
               <div className="bg-cyan-500 text-white p-2.5 rounded-xl shadow-lg shadow-cyan-500/30 w-fit mb-2 group-hover:rotate-6 transition-transform">
                 <MapPin size={20} />
               </div>
-              <h3 className="font-bold text-slate-900 text-sm">Kendra</h3>
-              <p className="text-[10px] text-slate-500 font-medium">Locator</p>
+              <h3 className="font-bold text-slate-900 text-sm">{t.widgets.kendra}</h3>
+              <p className="text-[10px] text-slate-500 font-medium">{t.widgets.kendraDesc}</p>
             </div>
           </div>
 
-          {/* 2. Jan-Manch Widget */}
           <div
             onClick={() => navigate("/community")}
             className="group bg-white rounded-[2rem] p-1.5 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500 cursor-pointer relative overflow-hidden h-32 flex items-center"
@@ -157,12 +161,11 @@ export default function Home() {
               <div className="bg-orange-500 text-white p-2.5 rounded-xl shadow-lg shadow-orange-500/30 w-fit mb-2 group-hover:-rotate-6 transition-transform">
                 <MessageCircle size={20} />
               </div>
-              <h3 className="font-bold text-slate-900 text-sm">Jan-Manch</h3>
-              <p className="text-[10px] text-slate-500 font-medium">Forum</p>
+              <h3 className="font-bold text-slate-900 text-sm">{t.widgets.janManch}</h3>
+              <p className="text-[10px] text-slate-500 font-medium">{t.widgets.janManchDesc}</p>
             </div>
           </div>
 
-          {/* 3. Tracker Widget */}
           <div
             onClick={() => navigate("/tracker")}
             className="group bg-white rounded-[2rem] p-1.5 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-500 cursor-pointer relative overflow-hidden h-32 flex items-center"
@@ -172,12 +175,11 @@ export default function Home() {
               <div className="bg-purple-500 text-white p-2.5 rounded-xl shadow-lg shadow-purple-500/30 w-fit mb-2 group-hover:rotate-6 transition-transform">
                 <LayoutGrid size={20} />
               </div>
-              <h3 className="font-bold text-slate-900 text-sm">Tracker</h3>
-              <p className="text-[10px] text-slate-500 font-medium">Status</p>
+              <h3 className="font-bold text-slate-900 text-sm">{t.widgets.tracker}</h3>
+              <p className="text-[10px] text-slate-500 font-medium">{t.widgets.trackerDesc}</p>
             </div>
           </div>
 
-          {/* 4. Graph Widget */}
           <div
             onClick={() => navigate("/graph")}
             className="group bg-white rounded-[2rem] p-1.5 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-500 cursor-pointer relative overflow-hidden h-32 flex items-center"
@@ -187,14 +189,11 @@ export default function Home() {
               <div className="bg-teal-500 text-white p-2.5 rounded-xl shadow-lg shadow-teal-500/30 w-fit mb-2 group-hover:-rotate-6 transition-transform">
                 <Share2 size={20} />
               </div>
-              <h3 className="font-bold text-slate-900 text-sm">Graph</h3>
-              <p className="text-[10px] text-slate-500 font-medium">
-                Visualizer
-              </p>
+              <h3 className="font-bold text-slate-900 text-sm">{t.widgets.graph}</h3>
+              <p className="text-[10px] text-slate-500 font-medium">{t.widgets.graphDesc}</p>
             </div>
           </div>
 
-          {/* 5. NEW: Vault Widget */}
           <div
             onClick={() => navigate("/vault")}
             className="group bg-white rounded-[2rem] p-1.5 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-slate-500/10 transition-all duration-500 cursor-pointer relative overflow-hidden h-32 flex items-center"
@@ -204,42 +203,43 @@ export default function Home() {
               <div className="bg-slate-700 text-white p-2.5 rounded-xl shadow-lg shadow-slate-700/30 w-fit mb-2 group-hover:rotate-6 transition-transform">
                 <Database size={20} />
               </div>
-              <h3 className="font-bold text-slate-900 text-sm">Vault</h3>
-              <p className="text-[10px] text-slate-500 font-medium">Offline</p>
+              <h3 className="font-bold text-slate-900 text-sm">{t.widgets.vault}</h3>
+              <p className="text-[10px] text-slate-500 font-medium">{t.widgets.vaultDesc}</p>
             </div>
           </div>
         </div>
 
-        {/* ... (Rest of the Bento Grid - Block B, C, D keep unchanged) ... */}
         {/* BLOCK B: Left Column (Tools) */}
         <div className="md:col-span-12 lg:col-span-4 space-y-6">
           <div className="group bg-white rounded-[2rem] p-1.5 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500">
             <VoiceAssistant
               currentData={formData}
               onUpdate={(d) => setFormData(d)}
+              lang={uiLang}
             />
           </div>
           <div className="group bg-white rounded-[2rem] p-1.5 border border-slate-100 shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
+            {/* Pass lang to Uploader */}
             <DocUploader
               onDataExtracted={(d) => setFormData((p) => ({ ...p, ...d }))}
-              currentFormData={formData}
+              lang={uiLang}
             />
           </div>
           <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-xl shadow-slate-200/50">
             <h3 className="font-bold text-slate-900 text-lg mb-6 flex items-center gap-2">
-              <User className="text-rose-500" /> Manual Override
+              <User className="text-rose-500" /> {t.manual.title}
             </h3>
-            {/* ... (Manual Form Inputs - Keep existing code) ... */}
+            
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-slate-400 ml-2 uppercase">
-                    Age
+                    {t.manual.age}
                   </label>
                   <input
                     name="age"
                     type="number"
-                    value={formData.age}
+                    value={formData.age || ""}
                     onChange={handleChange}
                     className="w-full bg-slate-50 rounded-xl px-4 py-3 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-rose-500 transition-all"
                     placeholder="25"
@@ -247,11 +247,11 @@ export default function Home() {
                 </div>
                 <div>
                   <label className="text-xs font-bold text-slate-400 ml-2 uppercase">
-                    Gender
+                    {t.manual.gender}
                   </label>
                   <select
                     name="gender"
-                    value={formData.gender}
+                    value={formData.gender || "Male"}
                     onChange={handleChange}
                     className="w-full bg-slate-50 rounded-xl px-4 py-3 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-rose-500 transition-all appearance-none cursor-pointer"
                   >
@@ -263,7 +263,7 @@ export default function Home() {
               </div>
               <div className="relative">
                 <label className="text-xs font-bold text-slate-400 ml-2 uppercase">
-                  Income (₹)
+                  {t.manual.income}
                 </label>
                 <div className="relative">
                   <Wallet
@@ -273,7 +273,7 @@ export default function Home() {
                   <input
                     name="income"
                     type="number"
-                    value={formData.income}
+                    value={formData.income || ""}
                     onChange={handleChange}
                     className="w-full bg-slate-50 rounded-xl pl-11 pr-4 py-3 font-bold text-slate-700 outline-none focus:ring-2 focus:ring-rose-500 transition-all"
                     placeholder="150000"
@@ -283,7 +283,7 @@ export default function Home() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-slate-400 ml-2 uppercase">
-                    Caste
+                    {t.manual.caste}
                   </label>
                   <select
                     name="caste"
@@ -299,7 +299,7 @@ export default function Home() {
                 </div>
                 <div>
                   <label className="text-xs font-bold text-slate-400 ml-2 uppercase">
-                    Occupation
+                    {t.manual.occupation}
                   </label>
                   <select
                     name="occupation"
@@ -323,7 +323,7 @@ export default function Home() {
                   <Loader2 className="animate-spin" />
                 ) : (
                   <>
-                    Check Eligibility <ArrowRight size={18} />
+                    {t.manual.checkBtn} <ArrowRight size={18} />
                   </>
                 )}
               </button>
@@ -331,7 +331,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* BLOCK C: The Results Feed (Keep unchanged) */}
+        {/* BLOCK C: The Results Feed (Dynamic) */}
         <div className="md:col-span-12 lg:col-span-8">
           {!results ? (
             <div className="h-full min-h-[600px] flex flex-col items-center justify-center bg-white rounded-[2.5rem] border border-slate-100 p-12 text-center shadow-xl shadow-slate-200/50">
@@ -339,20 +339,18 @@ export default function Home() {
                 <LayoutGrid className="text-rose-400" size={48} />
               </div>
               <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                Waiting for Data
+                {t.results.waitingTitle}
               </h3>
               <p className="text-slate-400">
-                Your personalized scheme feed will appear here.
+                {t.results.waitingDesc}
               </p>
             </div>
           ) : (
             <div className="space-y-6 animate-in fade-in zoom-in-95 duration-500">
-              {/* ... (Keep results display logic) ... */}
               <div className="flex justify-between items-center bg-slate-900 text-white p-8 rounded-[2rem] shadow-2xl">
                 <div>
                   <h3 className="text-2xl font-bold flex items-center gap-2">
-                    <CheckCircle className="text-emerald-400" /> Eligibility
-                    Report
+                    <CheckCircle className="text-emerald-400" /> {t.results.reportTitle}
                   </h3>
                   <p className="text-slate-400 mt-1">{results.summary}</p>
                 </div>
@@ -379,13 +377,13 @@ export default function Home() {
                       <Sparkles className="text-rose-500" size={60} />
                     </div>
                     <span className="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
-                      95% Match
+                      {t.results.match}
                     </span>
                     <h3 className="text-xl font-bold text-slate-900 mt-4 mb-2 leading-tight pr-4">
                       {scheme.name}
                     </h3>
                     <div className="flex items-center gap-2 text-rose-500 font-bold text-sm group-hover:gap-3 transition-all mt-4">
-                      View Details <ArrowRight size={16} />
+                      {t.results.viewDetails} <ArrowRight size={16} />
                     </div>
                   </div>
                 ))}
@@ -393,7 +391,7 @@ export default function Home() {
               {results.ineligible_preview.length > 0 && (
                 <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm opacity-80 hover:opacity-100 transition-opacity">
                   <h3 className="font-bold text-slate-400 uppercase text-xs tracking-wider mb-4 flex items-center gap-2">
-                    <XCircle size={14} /> Not Eligible
+                    <XCircle size={14} /> {t.results.notEligible}
                   </h3>
                   <div className="space-y-3">
                     {results.ineligible_preview
@@ -418,11 +416,11 @@ export default function Home() {
           )}
         </div>
 
-        {/* BLOCK D: Analytics (Keep unchanged) */}
+        {/* BLOCK D: Analytics */}
         <div className="md:col-span-12 mt-8">
           <div className="bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl shadow-slate-200/40">
             <h3 className="font-bold text-slate-900 text-xl mb-8">
-              Platform Intelligence
+              {t.analytics}
             </h3>
             <AnalyticsDashboard />
           </div>

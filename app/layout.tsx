@@ -4,10 +4,12 @@ import "./globals.css";
 import Provider from "@/components/SessionProvider";
 import AuthButton from "@/components/AuthButton";
 import Footer from "@/components/Footer";
-import TransitionProvider from "@/components/TransitionProvider"; // IMPORT THIS
+import TransitionProvider from "@/components/TransitionProvider";
 import ChatBot from "@/components/ChatBot";
 import SyncManager from "@/components/SyncManager";
 import { Toaster } from "sonner";
+import { getServerSession } from "next-auth"; // 1. Import Server Session
+
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -16,16 +18,20 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 };
 
-export default function RootLayout({
+// 2. Make RootLayout async
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
+  // 3. Fetch Session
+  const session = await getServerSession(); 
+
   return (
     <html lang="en">
       <body className={`${jakarta.className} bg-[#FDFBF7]`}>
         <Provider>
-          {/* WRAP EVERYTHING IN TRANSITION PROVIDER */}
           <TransitionProvider>
             {/* Floating Nav */}
             <div className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
@@ -50,8 +56,9 @@ export default function RootLayout({
               <Footer />
             </div>
 
-            {/* GLOBAL CHATBOT WIDGET */}
-            <ChatBot />
+            {/* 4. CONDITIONAL RENDER: Only show if session exists */}
+            {session && <ChatBot />}
+            
             <SyncManager />
           </TransitionProvider>
         </Provider>
