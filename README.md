@@ -124,3 +124,40 @@ Comprehensive platform intelligence & insights
 </table>
 
 ---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|:------|:-----------|:--------|
+| **Framework** | Next.js 14 (App Router) | Full-stack SSR & API routes |
+| **Language** | TypeScript | Type-safe development |
+| **Styling** | Tailwind CSS | Glassmorphism UI design |
+| **Database** | MongoDB Atlas | Schemes, users & logs storage |
+| **Auth** | NextAuth.js v4 | Google OAuth implementation |
+| **AI/LLM** | Groq (Llama-3-70b) | Ultra-fast NLP inference |
+| **OCR** | Tesseract.js | Server-side document scanning |
+| **Deployment** | Vercel | Serverless edge hosting |
+
+---
+
+## 🏗️ Architecture
+
+### 1. Authentication Flow
+
+```mermaid
+graph LR
+    A[User] -->|Login| B[Google OAuth]
+    B -->|Callback| C[NextAuth.js]
+    C -->|Create| D[JWT Session]
+    D -->|Protect| E[Dashboard/Chatbot]
+```
+
+### 2. Project Netra — Document Analysis Pipeline
+```
+┌─────────────┐     ┌──────────────┐      ┌─────────────┐      ┌──────────────┐
+│   Upload    │────▶│  Tesseract   │────▶│   Llama-3   │────▶│  Structured  │
+│  Document   │     │  OCR Engine  │      │  Processing │      │    JSON      │
+└─────────────┘     └──────────────┘      └─────────────┘      └──────────────┘
+     PDF/Image         Raw Text            AI Extraction          Clean Data
+```
+
