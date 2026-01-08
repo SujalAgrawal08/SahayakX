@@ -221,29 +221,42 @@ User Query
 ## ⚡ Performance Optimization - Redish Cache
 
 ```mermaid
-flowchart TB
-    A([🔥 HIGH TRAFFIC])
+flowchart TD
+    subgraph INPUT[" "]
+        A[🔥 HIGH TRAFFIC]
+    end
     
-    B[(🗄️ VERCEL KV<br/>━━━━━━━━━<br/>Redis Cache)]
+    subgraph CACHE[" "]
+        B[(🗄️ Vercel KV<br/>Redis Cache)]
+    end
     
-    C[(🍃 MONGODB<br/>━━━━━━━━━<br/>Data Source)]
+    subgraph DATABASE[" "]
+        C[(🍃 MongoDB<br/>Data Source)]
+    end
     
-    D([⚡ FAST RESPONSE])
+    subgraph OUTPUT[" "]
+        D[⚡ FAST RESPONSE]
+    end
 
-    A --> B
-    B -->|"❌ CACHE MISS"| C
-    C -->|"🔄 UPDATE CACHE"| B
-    B -->|"✅ CACHE HIT"| D
+    A ==>|"Request"| B
+    B -.->|"❌ Cache Miss"| C
+    C -.->|"🔄 Update Cache"| B
+    B ==>|"✅ Cache Hit < 30s"| D
 
-    style A fill:#FF6600,stroke:#1a1a1a,color:#FFFFFF,stroke-width:4px
-    style B fill:#FFB6C1,stroke:#1a1a1a,color:#1a1a1a,stroke-width:4px
-    style C fill:#FAFAFA,stroke:#1a1a1a,color:#1a1a1a,stroke-width:4px
-    style D fill:#FF6600,stroke:#1a1a1a,color:#FFFFFF,stroke-width:4px
+    style A fill:#FF6600,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    style B fill:#FFB6C1,stroke:#000000,color:#000000,stroke-width:3px
+    style C fill:#FFFFFF,stroke:#000000,color:#000000,stroke-width:3px
+    style D fill:#FF6600,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    
+    style INPUT fill:none,stroke:none
+    style CACHE fill:none,stroke:none
+    style DATABASE fill:none,stroke:none
+    style OUTPUT fill:none,stroke:none
 
-    linkStyle 0 stroke:#1a1a1a,stroke-width:3px
-    linkStyle 1 stroke:#1a1a1a,stroke-width:2px
-    linkStyle 2 stroke:#FFB6C1,stroke-width:2px
-    linkStyle 3 stroke:#1a1a1a,stroke-width:3px
+    linkStyle 0 stroke:#FF6600,stroke-width:3px
+    linkStyle 1 stroke:#FFB6C1,stroke-width:2px,stroke-dasharray:5
+    linkStyle 2 stroke:#FFB6C1,stroke-width:2px,stroke-dasharray:5
+    linkStyle 3 stroke:#FF6600,stroke-width:3px
 ```
 
 ## 🚀 Getting Started
