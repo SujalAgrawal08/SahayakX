@@ -2,7 +2,7 @@
 
 # 🏛️ SahayakX
 
-### The AI-Powered Government Scheme Super App
+### The AI-Powered Government Scheme App
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-FF6B35?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -220,18 +220,22 @@ User Query
 
 ## ⚡ Performance Optimization - Redish Cache
 
-```
-High Traffic
-     │
-     ▼
-┌─────────────┐    Cache Miss     ┌─────────────┐
-│  Vercel KV  │ ───────────────▶ │  MongoDB    │
-│  (Cache)    │ ◀─────────────── │  (Source)   │
-└─────────────┘    Update Cache   └─────────────┘
-     │
-     │ Cache Hit (< 30s old)
-     ▼
-⚡ Fast Response
+```mermaid
+flowchart TD
+    A[🔥 High Traffic] --> B[(Vercel KV<br/>Cache)]
+    B -->|Cache Miss| C[(MongoDB<br/>Source)]
+    C -->|Update Cache| B
+    B -->|Cache Hit < 30s old| D[⚡ Fast Response]
+
+    style A fill:#FF8C00,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    style B fill:#FFB6C1,stroke:#000000,color:#000000,stroke-width:2px
+    style C fill:#FFFFFF,stroke:#000000,color:#000000,stroke-width:2px
+    style D fill:#FF8C00,stroke:#000000,color:#FFFFFF,stroke-width:2px
+
+    linkStyle 0 stroke:#000000,stroke-width:2px
+    linkStyle 1 stroke:#FF8C00,stroke-width:2px
+    linkStyle 2 stroke:#FFB6C1,stroke-width:2px
+    linkStyle 3 stroke:#000000,stroke-width:2px
 ```
 
 ## 🚀 Getting Started
