@@ -222,20 +222,41 @@ User Query
 
 ```mermaid
 flowchart TD
-    A[🔥 High Traffic] --> B[(Vercel KV<br/>Cache)]
-    B -->|Cache Miss| C[(MongoDB<br/>Source)]
-    C -->|Update Cache| B
-    B -->|Cache Hit < 30s old| D[⚡ Fast Response]
+    subgraph INPUT[" "]
+        A[🔥 HIGH TRAFFIC]
+    end
+    
+    subgraph CACHE[" "]
+        B[(🗄️ Vercel KV<br/>Redis Cache)]
+    end
+    
+    subgraph DATABASE[" "]
+        C[(🍃 MongoDB<br/>Data Source)]
+    end
+    
+    subgraph OUTPUT[" "]
+        D[⚡ FAST RESPONSE]
+    end
 
-    style A fill:#FF8C00,stroke:#000000,color:#FFFFFF,stroke-width:2px
-    style B fill:#FFB6C1,stroke:#000000,color:#000000,stroke-width:2px
-    style C fill:#FFFFFF,stroke:#000000,color:#000000,stroke-width:2px
-    style D fill:#FF8C00,stroke:#000000,color:#FFFFFF,stroke-width:2px
+    A ==>|"Request"| B
+    B -.->|"❌ Cache Miss"| C
+    C -.->|"🔄 Update Cache"| B
+    B ==>|"✅ Cache Hit < 30s"| D
 
-    linkStyle 0 stroke:#000000,stroke-width:2px
-    linkStyle 1 stroke:#FF8C00,stroke-width:2px
-    linkStyle 2 stroke:#FFB6C1,stroke-width:2px
-    linkStyle 3 stroke:#000000,stroke-width:2px
+    style A fill:#FF6600,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    style B fill:#FFB6C1,stroke:#000000,color:#000000,stroke-width:3px
+    style C fill:#FFFFFF,stroke:#000000,color:#000000,stroke-width:3px
+    style D fill:#FF6600,stroke:#000000,color:#FFFFFF,stroke-width:3px
+    
+    style INPUT fill:none,stroke:none
+    style CACHE fill:none,stroke:none
+    style DATABASE fill:none,stroke:none
+    style OUTPUT fill:none,stroke:none
+
+    linkStyle 0 stroke:#FF6600,stroke-width:3px
+    linkStyle 1 stroke:#000000,stroke-width:2px,stroke-dasharray:5
+    linkStyle 2 stroke:#FFB6C1,stroke-width:2px,stroke-dasharray:5
+    linkStyle 3 stroke:#FF6600,stroke-width:3px
 ```
 
 ## 🚀 Getting Started
