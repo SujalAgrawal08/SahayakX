@@ -30,3 +30,26 @@
 ---
 
 </div>
+
+## 🎯 About
+
+<div align="center">
+<img src="./public/screenshots/about-preview.png" alt="About SahayakX" width="80%" />
+</div>
+
+<br/>
+
+**SahayakX** is a Next-Gen "Super App" designed to democratize access to government welfare schemes for Indian citizens. By leveraging cutting-edge AI technologies, we simplify:
+
+<div align="center">
+
+| 🔍 | ✅ | 📝 | 🗣️ |
+|:---:|:---:|:---:|:---:|
+| **Scheme Discovery** | **Eligibility Verification** | **Application Assistance** | **Voice Accessibility** |
+| Find relevant schemes instantly | Auto-verify using document analysis | Step-by-step guidance | Breaking literacy barriers |
+
+</div>
+
+> *"🧡 Making government benefits accessible to every citizen, regardless of their technical literacy."*
+
+---
