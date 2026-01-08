@@ -160,4 +160,109 @@ graph LR
 └─────────────┘     └──────────────┘      └─────────────┘      └──────────────┘
      PDF/Image         Raw Text            AI Extraction          Clean Data
 ```
+### 3. Sahayak Sarathi — Chatbot Architecture (RAG + Fallback)
 
+```
+User Query
+    │
+    ▼
+┌─────────────────────┐
+│  MongoDB Lookup     │──── Found ────▶ Inject context into prompt
+│  (Semantic Search)  │
+└─────────────────────┘
+    │
+    │ Not Found
+    ▼
+┌─────────────────────┐
+│  Knowledge Fallback │──── Generate response from Llama-3's
+│  (Never say IDK!)   │     training data + disclaimer
+└─────────────────────┘
+    │
+    ▼
+┌─────────────────────┐
+│  Markdown Render    │──── react-markdown with custom styling
+└─────────────────────┘
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+* Node.js >= 18.0
+* npm installed
+* MongoDB Atlas account
+* Google Cloud Console project
+* Groq Cloud API access
+
+### Installation
+1. Clone the repository
+```bash
+git clone https://github.com/SujalAgrawal08/SahayakX.git
+cd SahayakX
+```
+2. Install dependencies
+```bash
+npm install
+```
+3. Configure environment variables
+```bash
+cp .env.local
+```
+Fill in the required values:
+```bash
+# Database
+MONGODB_URI="mongodb+srv://username:password@cluster.mongodb.net/sahayakx"
+
+# Authentication
+GOOGLE_CLIENT_ID="your-client-id.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="your-client-secret"
+NEXTAUTH_SECRET="generate-with-openssl-rand-base64-32"
+NEXTAUTH_URL="http://localhost:3000"
+
+# AI Engine
+GROQ_API_KEY="gsk_your_api_key_here"
+```
+4. Run the development server
+```bash 
+npm run dev
+```
+5. Open your browser
+```bash 
+http://localhost:3000
+```
+
+### 📂 Project Structure
+```
+sahayak-x/
+├── 📁 app/
+│   ├── 📁 api/
+│   │   ├── auth/           # NextAuth route handlers
+│   │   ├── chat/           # Chatbot logic (RAG + Llama3)
+│   │   └── extract/        # Project Netra (OCR + parsing)
+│   │
+│   ├── 📁 components/
+│   │   ├── AnalyticsDashboard.tsx
+│   │   ├── ChatBot.tsx
+│   │   └── LandingPage.tsx
+│   │
+│   ├── layout.tsx          # Root layout (fonts, providers)
+│   └── page.tsx            # Home page
+│
+├── 📁 lib/
+│   ├── rulesEngine.ts      # Eligibility check logic
+│   └── mongodb.ts          # Database connection helper
+│
+├── 📁 public/              # Static assets & PWA icons
+│
+├── 📄 next.config.mjs      # Vercel & WASM configuration
+├── 📄 tailwind.config.ts   # Design system tokens
+├── 📄 tsconfig.json        # TypeScript configuration
+└── 📄 package.json
+
+```
+
+<div align="center">
+Built with ❤️ for Bharat
+
+Empowering citizens through technology
+
+</div>
