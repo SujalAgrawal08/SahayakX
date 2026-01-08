@@ -179,11 +179,26 @@ Comprehensive platform intelligence & insights
 ### 1. Authentication Flow
 
 ```mermaid
+%%{init: {'theme': 'base', 'themeVariables': { 'fontSize': '16px', 'fontFamily': 'Segoe UI, Roboto, sans-serif'}}}%%
+
 graph LR
-    A[User] -->|Login| B[Google OAuth]
-    B -->|Callback| C[NextAuth.js]
-    C -->|Create| D[JWT Session]
-    D -->|Protect| E[Dashboard/Chatbot]
+    A[👤 User]:::userNode -->|"🔐 Login Request"| B[Google OAuth 2.0]:::googleNode
+    B -->|"✓ Auth Callback"| C[NextAuth.js]:::nextauthNode
+    C -->|"🎫 Generate"| D[JWT Session]:::jwtNode
+    D -->|"🛡️ Secure Access"| E[Dashboard & Chatbot]:::dashboardNode
+
+    %% Node Styles - Light Orange Palette
+    classDef userNode fill:#FFF8F0,stroke:#E07B39,stroke-width:3px,color:#8B4513,font-weight:bold
+    classDef googleNode fill:#FFE8D6,stroke:#D2691E,stroke-width:2.5px,color:#8B4513,font-weight:bold
+    classDef nextauthNode fill:#FFDAB9,stroke:#CD853F,stroke-width:2.5px,color:#704214,font-weight:bold
+    classDef jwtNode fill:#FFCC99,stroke:#CC7722,stroke-width:2.5px,color:#704214,font-weight:bold
+    classDef dashboardNode fill:#FFB366,stroke:#B8651B,stroke-width:3px,color:#5D3A1A,font-weight:bold
+
+    %% Link Styles
+    linkStyle 0 stroke:#E07B39,stroke-width:2.5px
+    linkStyle 1 stroke:#D2691E,stroke-width:2.5px
+    linkStyle 2 stroke:#CD853F,stroke-width:2.5px
+    linkStyle 3 stroke:#CC7722,stroke-width:2.5px
 ```
 
 ### 2. Project Netra — Document Analysis Pipeline
