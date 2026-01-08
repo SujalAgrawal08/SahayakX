@@ -222,28 +222,28 @@ User Query
 
 ```mermaid
 flowchart TD
-    A[/"🔥 HIGH TRAFFIC<br/>━━━━━━━━━━━━<br/>Incoming Requests"/]
+    A[🔥 High Traffic<br/>Incoming Requests]
     
-    B[(🗄️ VERCEL KV<br/>━━━━━━━━━━<br/>Redis Cache<br/>TTL: 30 seconds)]
+    B[(🗄️ Vercel KV<br/>Redis Cache<br/>TTL: 30s)]
     
-    C[(🍃 MONGODB<br/>━━━━━━━━━━<br/>Primary Database<br/>Source of Truth)]
+    C[(🍃 MongoDB<br/>Primary Database)]
     
-    D[\"⚡ FAST RESPONSE<br/>━━━━━━━━━━━━<br/>Optimized Data"/]
+    D[⚡ Fast Response<br/>Optimized Data]
 
-    A ==>|"📨 Request"| B
-    B -.->|"❌ Cache MISS"| C
-    C -.->|"🔄 Store & Update"| B
-    B ==>|"✅ Cache HIT"| D
+    A ==>|"Request"| B
+    B -.->|"Cache Miss"| C
+    C -.->|"Store & Update"| B
+    B ==>|"Cache Hit"| D
 
-    style A fill:#E75480,stroke:#9B2C5A,color:#FFFFFF,stroke-width:3px
-    style B fill:#FFB6C1,stroke:#DB7093,color:#4A1028,stroke-width:3px
-    style C fill:#FFFFFF,stroke:#FFB6C1,color:#9B2C5A,stroke-width:3px
-    style D fill:#E75480,stroke:#9B2C5A,color:#FFFFFF,stroke-width:3px
+    style A fill:#E75480,stroke:#9B2C5A,color:#FFFFFF,stroke-width:2px
+    style B fill:#FFB6C1,stroke:#DB7093,color:#4A1028,stroke-width:2px
+    style C fill:#FFFFFF,stroke:#FFB6C1,color:#9B2C5A,stroke-width:2px
+    style D fill:#E75480,stroke:#9B2C5A,color:#FFFFFF,stroke-width:2px
 
-    linkStyle 0 stroke:#E75480,stroke-width:4px
-    linkStyle 1 stroke:#DB7093,stroke-width:2px,stroke-dasharray:8
-    linkStyle 2 stroke:#FFB6C1,stroke-width:2px,stroke-dasharray:8
-    linkStyle 3 stroke:#E75480,stroke-width:4px
+    linkStyle 0 stroke:#E75480,stroke-width:3px
+    linkStyle 1 stroke:#DB7093,stroke-width:2px,stroke-dasharray:5
+    linkStyle 2 stroke:#FFB6C1,stroke-width:2px,stroke-dasharray:5
+    linkStyle 3 stroke:#E75480,stroke-width:3px
 ```
 
 ## 🚀 Getting Started
