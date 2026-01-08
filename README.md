@@ -222,41 +222,28 @@ User Query
 
 ```mermaid
 flowchart TD
-    subgraph INPUT[" "]
-        A[🔥 HIGH TRAFFIC]
-    end
+    A[/"🔥 HIGH TRAFFIC<br/>━━━━━━━━━━━━<br/>Incoming Requests"/]
     
-    subgraph CACHE[" "]
-        B[(🗄️ Vercel KV<br/>Redis Cache)]
-    end
+    B[(🗄️ VERCEL KV<br/>━━━━━━━━━━<br/>Redis Cache<br/>TTL: 30 seconds)]
     
-    subgraph DATABASE[" "]
-        C[(🍃 MongoDB<br/>Data Source)]
-    end
+    C[(🍃 MONGODB<br/>━━━━━━━━━━<br/>Primary Database<br/>Source of Truth)]
     
-    subgraph OUTPUT[" "]
-        D[⚡ FAST RESPONSE]
-    end
+    D[\"⚡ FAST RESPONSE<br/>━━━━━━━━━━━━<br/>< 50ms Latency"/]
 
-    A ==>|"Request"| B
-    B -.->|"❌ Cache Miss"| C
-    C -.->|"🔄 Update Cache"| B
-    B ==>|"✅ Cache Hit < 30s"| D
+    A ==>|"📨 Request"| B
+    B -.->|"❌ Cache MISS"| C
+    C -.->|"🔄 Store & Update"| B
+    B ==>|"✅ Cache HIT"| D
 
-    style A fill:#FAB972,stroke:#000000,color:#FFFFFF,stroke-width:3px
-    style B fill:#FFB6C1,stroke:#000000,color:#000000,stroke-width:3px
-    style C fill:#FFFFFF,stroke:#000000,color:#000000,stroke-width:3px
-    style D fill:#FAB972,stroke:#000000,color:#FFFFFF,stroke-width:3px
-    
-    style INPUT fill:none,stroke:none
-    style CACHE fill:none,stroke:none
-    style DATABASE fill:none,stroke:none
-    style OUTPUT fill:none,stroke:none
+    style A fill:#FAB972,stroke:#2d2d2d,color:#000000,stroke-width:3px
+    style B fill:#FFB6C1,stroke:#2d2d2d,color:#000000,stroke-width:3px
+    style C fill:#FFFFFF,stroke:#2d2d2d,color:#000000,stroke-width:3px
+    style D fill:#FAB972,stroke:#2d2d2d,color:#000000,stroke-width:3px
 
-    linkStyle 0 stroke:#FAB972,stroke-width:3px
-    linkStyle 1 stroke:#FFB6C1,stroke-width:2px,stroke-dasharray:5
-    linkStyle 2 stroke:#FFB6C1,stroke-width:2px,stroke-dasharray:5
-    linkStyle 3 stroke:#FAB972,stroke-width:3px
+    linkStyle 0 stroke:#FAB972,stroke-width:4px
+    linkStyle 1 stroke:#2d2d2d,stroke-width:2px,stroke-dasharray:8
+    linkStyle 2 stroke:#FFB6C1,stroke-width:2px,stroke-dasharray:8
+    linkStyle 3 stroke:#FAB972,stroke-width:4px
 ```
 
 ## 🚀 Getting Started
